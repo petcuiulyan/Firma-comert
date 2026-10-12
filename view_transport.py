@@ -7,6 +7,7 @@ import view_common as c
 
 def render():
     st.title("🚚 Capacitate transport")
+    c.intro("Câți paleți ocupă marfa comandată și ce mijloc de transport ți-ar trebui (camion, container, avion).")
     d, s, oc, lc = c.compute_all()
     if oc.empty:
         c.info_empty("Nu există comenzi."); return

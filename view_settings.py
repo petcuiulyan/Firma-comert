@@ -23,6 +23,10 @@ def render():
             s["profit_tax"] = b[0].number_input("Impozit profit", value=s["profit_tax"], format="%.2f"); s["micro_tax"] = b[1].number_input("Impozit micro", value=s["micro_tax"], format="%.3f")
             s["default_duty"] = b[2].number_input("Taxă vamală implicită", value=s["default_duty"], format="%.3f"); s["min_margin"] = b[3].number_input("Marjă minimă SKU", value=s["min_margin"], format="%.2f")
             s["vat_payer"] = st.toggle("Firma este plătitoare de TVA", value=s["vat_payer"])
+            st.markdown("**Retururi**")
+            r = st.columns(2)
+            s["returns_recovery"] = r[0].number_input("Din produsele returnate, cât % se pot revinde (%)", 0.0, 100.0, 100 * float(s["returns_recovery"]), help="0 = produsul returnat e pierdut (estimare prudentă). 100 = îl revinzi integral.") / 100
+            s["returns_min_sold"] = r[1].number_input("Rata reală de retur se folosește după minim … bucăți vândute", 1, 1000, int(s["returns_min_sold"]), help="Sub acest număr, rata reală (returnat ÷ vândut) e prea nesigură și se folosește estimarea.")
             st.markdown("**Paletizare și transport**")
             p = st.columns(5)
             for i, (k, lab) in enumerate([("pallet_l", "Palet L (cm)"), ("pallet_w", "Palet l (cm)"), ("pallet_empty_h", "Înălț. palet gol"), ("pallet_max_h", "Înălț. max. stivuire"), ("pallet_max_kg", "Kg max/palet")]):

@@ -8,6 +8,7 @@ import view_common as c
 
 def render():
     st.title("💶 Cost per bucată")
+    c.intro("Cât te costă, de fapt, o bucată pusă în depozitul tău: marfă + transport + taxe + TVA (dacă nu îl recuperezi). Valorile sunt în RON, EUR și USD.")
     d, s, oc, lc = c.compute_all()
     if lc.empty:
         c.info_empty("Nu există linii de comandă."); return

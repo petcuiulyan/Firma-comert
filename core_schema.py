@@ -10,7 +10,7 @@ ORDERS = [
     ("id", "text", "", "ID comanda"), ("date", "date", None, "Data comanda"),
     ("supplier", "text", "", "Furnizor"), ("pi_no", "text", "", "Nr. PI"),
     ("incoterm", "text", "DDP", "Incoterm"), ("transport_type", "text", "Aerian", "Tip transport"),
-    ("goods_cur", "text", "USD", "Moneda marfa"), ("usd_ron", "num", None, "Curs USD→RON"),
+    ("goods_cur", "text", "USD", "Moneda achizitiei (a facturii)"), ("usd_ron", "num", None, "Curs USD→RON"),
     ("eur_ron", "num", None, "Curs EUR→RON"), ("transp_cur", "text", "USD", "Moneda transport"),
     ("transp_basis", "text", "Total fix", "Baza tarif transport"), ("transp_rate", "num", 0.0, "Tarif transport"),
     ("min_chargeable", "num", 0.0, "Minim taxabil (kg/CBM)"), ("volumetric", "text", "Nu", "Greutate volumetrica?"),
@@ -23,21 +23,21 @@ ORDERS = [
 ]
 LINES = [
     ("order_id", "text", "", "ID comanda"), ("sku", "text", "", "SKU / Item"), ("description", "text", "", "Descriere"),
-    ("hs_code", "text", "", "Cod NC/HS"), ("qty", "num", 0.0, "Cantitate"), ("unit_price", "num", 0.0, "Pret unitar"),
+    ("hs_code", "text", "", "Cod NC/HS"), ("qty", "num", 0.0, "Cantitate"), ("unit_price", "num", 0.0, "Pret achizitie/buc (moneda comenzii)"),
     ("unit_weight_kg", "num", 0.0, "Greutate/buc (kg)"), ("pcs_per_carton", "num", 0.0, "Buc/carton"),
     ("carton_l", "num", 0.0, "L carton (cm)"), ("carton_w", "num", 0.0, "l carton (cm)"), ("carton_h", "num", 0.0, "H carton (cm)"),
     ("cbm_per_pc", "num", 0.0, "CBM/buc (manual)"), ("ro_price", "num", None, "Pret RO cu TVA"), ("notes", "text", "", "Observatii"),
 ]
 CATALOG = [
     ("sku", "text", "", "SKU"), ("description", "text", "", "Descriere"), ("hs_code", "text", "", "Cod NC/HS"),
-    ("supplier", "text", "", "Furnizor"), ("currency", "text", "USD", "Moneda"), ("last_price", "num", None, "Ultimul pret"),
+    ("supplier", "text", "", "Furnizor"), ("currency", "text", "USD", "Moneda"), ("last_price", "num", None, "Ultimul pret achizitie (moneda PI)"),
     ("unit_weight_kg", "num", None, "Greutate/buc (kg)"), ("pcs_per_carton", "num", None, "Buc/carton"),
     ("carton_l", "num", None, "L carton"), ("carton_w", "num", None, "l carton"), ("carton_h", "num", None, "H carton"),
-    ("sell_price_vat", "num", None, "Pret vanzare cu TVA"), ("vat_pct", "num", 0.21, "TVA vanzare"),
+    ("sell_price_vat", "num", None, "Pret vanzare cu TVA (RON)"), ("vat_pct", "num", 0.21, "TVA vanzare"),
     ("commission_pct", "num", 0.15, "Comision marketplace"), ("packaging", "num", 0.0, "Ambalare/buc"),
     ("courier", "num", 0.0, "Livrare curier/buc"), ("storage", "num", 0.0, "Depozitare/buc"),
     ("returns_pct", "num", 0.0, "Rata retur"), ("ads", "num", 0.0, "Ads/buc"),
-    ("ro_price", "num", None, "Pret RO piata cu TVA"), ("sold_qty", "num", 0.0, "Vandut (buc)"), ("notes", "text", "", "Observatii"),
+    ("ro_price", "num", None, "Pret piata RO cu TVA (RON)"), ("sold_qty", "num", 0.0, "Vandut (buc)"), ("returned_qty", "num", 0.0, "Returnat (buc)"), ("notes", "text", "", "Observatii"),
 ]
 HISTORY = [
     ("date", "date", None, "Data"), ("sku", "text", "", "SKU"), ("supplier", "text", "", "Furnizor"),

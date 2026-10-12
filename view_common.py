@@ -12,6 +12,20 @@ import core_storage as storage
 PCT_COLS = {"duty_pct", "vat_pct", "vat_pct", "commission_pct", "returns_pct"}
 
 
+PAGES = {}   # completat de app.py: permite linkuri intre pagini
+
+
+def intro(text):
+    """Explicatie scurta, in limbaj simplu, la inceputul fiecarei pagini."""
+    st.info(text, icon="💡")
+
+
+def goto(key, label):
+    """Buton-link catre o alta pagina (daca aplicatia a inregistrat paginile)."""
+    if key in PAGES:
+        st.page_link(PAGES[key], label=label)
+
+
 def load_all():
     """Incarca tabelele si setarile de pe disc."""
     return {n: storage.load(n) for n in schema.SPECS}, storage.load_settings()

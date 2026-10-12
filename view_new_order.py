@@ -18,6 +18,7 @@ LINE_VIEW = ["sku", "description", "qty", "unit_price", "unit_weight_kg", "pcs_p
 
 def render():
     st.title("🛒 Comandă nouă")
+    c.intro("Pregătești o comandă nouă: alegi produsele și cantitățile și vezi, înainte să plătești, cât te costă să le aduci în țară.")
     d, s = c.load_all()
     cat = d["catalog"][d["catalog"]["sku"] != ""]
     if "no_lines" not in st.session_state:

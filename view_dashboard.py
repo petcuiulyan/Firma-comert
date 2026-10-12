@@ -10,6 +10,7 @@ import view_common as c
 
 def render():
     st.title("📊 Prezentare generală")
+    c.intro("Grafice generale: cum evoluează transportul, cât ai cheltuit cumulat și ce marjă are fiecare produs.")
     d, s, oc, lc = c.compute_all()
     done = oc[oc["status"] != "Draft"]
     if oc.empty:
@@ -22,7 +23,7 @@ def render():
     k[2].metric("Valoare marfă (RON)", f"{done['goods_ron'].sum():,.0f}")
     k[3].metric("Cost total cu TVA (RON)", f"{done['total_vat_ron'].sum():,.0f}")
     costs = margins.weighted_costs(lc, oc)
-    mt = margins.margin_table(d["catalog"], costs, s["min_margin"])
+    mt = margins.margin_table(d["catalog"], costs, s["min_margin"], s)
     mv, mn = margins.portfolio(mt)
     k = st.columns(4)
     k[0].metric("SKU în catalog", int((d["catalog"]["sku"] != "").sum()))

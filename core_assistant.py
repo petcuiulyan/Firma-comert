@@ -15,11 +15,11 @@ def build_context(d, s, oc, lc, months, max_chars=14000):
         out.append(f"{o['id']} | {dt} | {o['supplier']} | {o['status']} | {_f(o['qty_tot'], 0)} | {_f(o['goods_ron'])} | {_f(o['transp_ron'])} | "
                    f"{_f(o['ron_per_kg'])} | {_f(o['ron_per_cbm'])} | {_f(o['total_novat_ron'])} | {_f(o['total_vat_ron'])} | {o['warnings']}")
     base = margins.catalog_with_order_skus(d["catalog"], d["lines"])
-    mt = margins.margin_table(base, margins.weighted_costs(lc, oc), s["min_margin"])
+    mt = margins.margin_table(base, margins.weighted_costs(lc, oc), s["min_margin"], s)
     out.append("PRODUSE (sku | descriere | importat | vandut | stoc | cost fara TVA | cost cu TVA | pret vanzare cu TVA | rata retur | marja TVA | marja non-TVA):")
     for _, r in mt.iterrows():
         out.append(f"{r['sku']} | {str(r['description'])[:40]} | {_f(r['qty'], 0)} | {_f(r['sold_qty'], 0)} | {_f(r['stock'], 0)} | {_f(r['cost_novat'])} | {_f(r['cost_vat'])} | "
-                   f"{_f(r['sell_price_vat'])} | {_f(r['returns_pct'] * 100, 1)}% | {_f(r['margin_vat'] * 100, 1)}% | {_f(r['margin_nonvat'] * 100, 1)}%")
+                   f"{_f(r['sell_price_vat'])} | {_f(r['returns_used'] * 100, 1)}% ({r['returns_source']}) | {_f(r['margin_vat'] * 100, 1)}% | {_f(r['margin_nonvat'] * 100, 1)}%")
     if len(months):
         out.append("LUNI FISCALE (luna | inchisa | marfa | transport | taxe vamale | TVA import | alte costuri | OPEX | venit fara TVA | venit cu TVA | profit cash TVA | profit cash non-TVA):")
         for _, m in months.sort_values("month").iterrows():

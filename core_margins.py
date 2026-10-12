@@ -23,21 +23,31 @@ def weighted_costs(lines_calc, orders_calc, include_status=None):
     ex_only = l[~inc].groupby("_k")["qty"].sum().drop(g.index, errors="ignore")
     if len(ex_only):
         g = pd.concat([g, pd.DataFrame({"qty": 0.0, "qty_excl": ex_only})])
-    return g[["qty", "qty_excl", "cost_novat", "cost_vat", "c_goods", "c_transport", "c_duty", "c_vat", "c_local"]]
+    last = l.sort_values("o_date").groupby("_k").last()
+    g["buy_price"], g["buy_cur"] = last["unit_price"], last["o_goods_cur"]
+    return g[["qty", "qty_excl", "cost_novat", "cost_vat", "c_goods", "c_transport", "c_duty", "c_vat", "c_local", "buy_price", "buy_cur"]]
 
 
-def margin_table(catalog, costs, min_margin):
+def margin_table(catalog, costs, min_margin, settings=None):
+    """settings: optional (returns_recovery, returns_min_sold, vat_payer)."""
+    st_ = settings or {}
+    rec, mins = st_.get("returns_recovery", 0.0), st_.get("returns_min_sold", 10)
     c = catalog[catalog["sku"].str.strip() != ""].copy()
     c["_k"] = sku_key(c["sku"])
     c = c.merge(costs, left_on="_k", right_index=True, how="left").drop(columns="_k")
     for col in ("qty", "qty_excl"):
         c[col] = c[col].fillna(0)
-    c["stock"] = c["qty"] - c["sold_qty"].fillna(0)
+    sold, ret = c["sold_qty"].fillna(0), c["returned_qty"].fillna(0)
+    c["returns_real"] = ret / sold.replace(0, np.nan)                       # rata REALA = returnat / vandut
+    real_ok = c["returns_real"].notna() & (sold >= mins)                     # destule vanzari ca rata reala sa conteze
+    c["returns_used"] = np.where(real_ok, c["returns_real"], c["returns_pct"])
+    c["returns_source"] = np.where(real_ok, "reala", "estimata")
+    c["stock"] = c["qty"] - sold + ret * rec                                # retururile revandabile revin in stoc
     extra = c["packaging"] + c["courier"] + c["storage"] + c["ads"]
     net_price = c["sell_price_vat"] / (1 + c["vat_pct"])
     c["commission_amt"] = c["sell_price_vat"] * c["commission_pct"]
-    c["returns_vat"] = c["returns_pct"] * (c["cost_novat"] + extra)       # cost retur/buc - platitor TVA
-    c["returns_nonvat"] = c["returns_pct"] * (c["cost_vat"] + extra)      # cost retur/buc - neplatitor
+    c["returns_vat"] = c["returns_used"] * (c["cost_novat"] + extra) * (1 - rec)       # cost retur/buc - platitor TVA
+    c["returns_nonvat"] = c["returns_used"] * (c["cost_vat"] + extra) * (1 - rec)      # cost retur/buc - neplatitor
     c["sell_costs_vat"] = c["commission_amt"] + extra + c["returns_vat"]
     c["sell_costs_nonvat"] = c["commission_amt"] + extra + c["returns_nonvat"]
     c["profit_vat"] = net_price - c["cost_novat"] - c["sell_costs_vat"]
@@ -48,6 +58,12 @@ def margin_table(catalog, costs, min_margin):
     c["better"] = np.where(c["diff"].isna(), "", np.where(c["diff"] > 0, "SRL TVA", "SRL non-TVA"))
     c["below_min"] = np.where(c["margin_vat"].isna() | c["margin_nonvat"].isna(), "",
                               np.where((c["margin_vat"] < min_margin) & (c["margin_nonvat"] < min_margin), "DA - verifica", "OK"))
+    m = min_margin   # pret minim pentru marja tinta (cost si retur nu depind de pret => formula inchisa)
+    den_n = (1 - c["commission_pct"] - m).where(lambda x: x > 0)
+    den_v = ((1 - m) / (1 + c["vat_pct"]) - c["commission_pct"]).where(lambda x: x > 0)
+    c["min_price_nonvat"] = (c["cost_vat"] + extra + c["returns_nonvat"]) / den_n
+    c["min_price_vat"] = (c["cost_novat"] + extra + c["returns_vat"]) / den_v
+    c["min_price"] = np.where(st_.get("vat_payer", False), c["min_price_vat"], c["min_price_nonvat"])
     no_cost = c["cost_novat"].isna()
     c["status"] = np.where(no_cost & (c["qty_excl"] > 0), "Comenzile cu acest SKU sunt excluse (Draft?)",
                    np.where(no_cost, "SKU negasit in nicio comanda (verifica scrierea SKU)",

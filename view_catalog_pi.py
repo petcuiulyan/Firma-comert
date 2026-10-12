@@ -17,6 +17,7 @@ LINE_COLS = ["sku", "description", "hs_code", "qty", "unit_price", "pcs_per_cart
 
 def render():
     st.title("📦 Produse & PI furnizori")
+    c.intro("Aici încarci oferta (PI) de la furnizor. Aplicația citește produsele, le compară cu ce ai deja și îți arată ce e nou sau ce s-a scumpit.")
     tab_pi, tab_cat, tab_hist = st.tabs(["⬆️ Încarcă PI", "📚 Catalog produse", "📈 Istoric prețuri"])
     d, s = c.load_all()
     with tab_pi:

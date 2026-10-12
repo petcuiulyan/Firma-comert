@@ -10,6 +10,7 @@ from view_order_form import order_form
 
 def render():
     st.title("🧾 Comenzi")
+    c.intro("Lista comenzilor tale. Aici completezi data, cursul valutar și transportul real, după ce ai oferta curierului sau a transportatorului.")
     d, s, oc, lc = c.compute_all()
     if oc.empty:
         c.info_empty("Nicio comandă. Creeaz-o din **Comandă nouă** sau din **Produse & PI**."); return

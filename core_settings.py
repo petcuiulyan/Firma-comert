@@ -8,7 +8,7 @@ DEFAULTS = {
     "pallet_l": 120.0, "pallet_w": 80.0, "pallet_empty_h": 15.0, "pallet_max_h": 220.0, "pallet_max_kg": 1000.0,
     "truck_pallets": 33, "truck_kg": 24000.0, "c20_pallets": 11, "c20_kg": 21700.0,
     "c40_pallets": 23, "c40_kg": 26000.0, "vol_divisor": 6000.0,
-    "min_margin": 0.15,
+    "min_margin": 0.15, "returns_recovery": 0.0, "returns_min_sold": 10,
     # taxa vamala pe cod NC/HS (fractie), ex. {"9503.00": 0.0}
     "hs_duties": {},
     # P&L: venituri lunare (fara TVA pentru varianta platitor / incasate pentru non-TVA)

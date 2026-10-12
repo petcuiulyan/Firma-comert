@@ -17,6 +17,7 @@ N2 = lambda t: st.column_config.NumberColumn(t, format="%.2f")
 
 def render():
     st.title("🏛️ Fiscal: luni, P&L și regim recomandat")
+    c.intro("Închizi luna: aplicația adună costurile de import, vânzările și OPEX-ul (cheltuielile lunare fixe) și îți spune ce regim fiscal ar fi mai avantajos.")
     d, s, oc, lc = c.compute_all()
     t1, t2, t3 = st.tabs(["📅 Lună: costuri + închidere", "📊 P&L pe luni", "⚖️ Regimuri fiscale"])
     with t1:
@@ -64,7 +65,7 @@ def _month_tab(d, s, oc, lc):
         st.warning("Comenzi cu avertismente: " + "; ".join(f"{r['id']}: {r['warnings']}" for _, r in bad.iterrows()))
 
     base = margins.catalog_with_order_skus(d["catalog"], d["lines"])
-    mt = margins.margin_table(base, margins.weighted_costs(lc, oc), s["min_margin"])
+    mt = margins.margin_table(base, margins.weighted_costs(lc, oc), s["min_margin"], s)
     sales, sdf = periods.sales_in_month(mt, periods.snapshot_of(months))
     st.markdown("**2 · Vânzări din lună** (automat: *Vândut* din pagina Marjă − *Vândut* la ultima închidere)")
     if sdf.empty:
