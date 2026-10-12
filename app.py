@@ -1,7 +1,16 @@
 """Import Calculator – punct de intrare Streamlit. Fiecare sectiune e in views/<nume>.py, iar calculele in core/<nume>.py."""
 import streamlit as st
 
-from views import catalog_pi, cost, dashboard, fiscal, margins, new_order, orders, settings, transport
+import view_dashboard as dashboard
+import view_catalog_pi as catalog_pi
+import view_new_order as new_order
+import view_orders as orders
+import view_cost as cost
+import view_transport as transport
+import view_margins as margins
+import view_fiscal as fiscal
+import view_settings as settings
+import view_assistant as assistant
 
 st.set_page_config(page_title="Import Calculator", page_icon="📦", layout="wide")
 
@@ -18,6 +27,9 @@ pages = {
         st.Page(margins.render, title="Marjă per produs", icon="📈", url_path="marja"),
         st.Page(fiscal.render, title="Fiscal", icon="🏛️", url_path="fiscal"),
     ],
-    "Sistem": [st.Page(settings.render, title="Setări & Backup", icon="⚙️", url_path="setari")],
+    "Sistem": [
+        st.Page(settings.render, title="Setări & Backup", icon="⚙️", url_path="setari"),
+        st.Page(assistant.render, title="Asistent AI", icon="🤖", url_path="asistent"),
+    ],
 }
 st.navigation(pages).run()
